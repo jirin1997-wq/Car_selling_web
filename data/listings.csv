@@ -1,0 +1,5 @@
+id,brand,model,title,price,year,mileage,fuel,transmission,power,engine,color,owners,stk,description,image,url
+sample-1,Škoda,Octavia,Škoda Octavia 2.0 TDI Style,389000,2019,98000,Nafta,Manuál,110,1968,Stříbrná,2,do 03/2027,"Pravidelně servisovaná Octavia ve výbavě Style, zimní pneumatiky na plechách.",,https://www.sauto.cz/
+sample-2,Volkswagen,Golf,Volkswagen Golf 1.5 TSI Life,329000,2020,74500,Benzín,Automat,96,1498,Modrá,1,do 09/2026,"První majitel, bezhavarijní. Digitální kokpit, LED světlomety.",,https://www.sauto.cz/
+sample-3,Škoda,Fabia,Škoda Fabia 1.0 TSI Ambition,245000,2018,121000,Benzín,Manuál,81,999,Bílá,3,do 11/2026,"Úsporný městský vůz. Nové brzdy, výměna rozvodů v roce 2024.",,https://www.sauto.cz/
+sample-4,BMW,X3,BMW X3 xDrive20d M Sport,575000,2021,56000,Nafta,Automat,140,1995,Černá,1,do 05/2028,"Výbava M Sport, adaptivní podvozek, head-up displej, kožené sedačky.",,https://www.sauto.cz/
