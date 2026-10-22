@@ -85,10 +85,17 @@ function favButton(car) {
     aria-pressed="${on}" aria-label="${on ? "Odebrat z oblíbených" : "Přidat do oblíbených"}">${HEART}</button>`;
 }
 
+// Bez fotky ukážeme siluetu vozu, ať karta nevypadá prázdně.
+const CAR_SILHOUETTE = `<svg class="car-silhouette" viewBox="0 0 400 240" aria-hidden="true">
+  <path d="M60 170h280c12 0 20-8 20-20v-22c0-10-6-16-14-20l-42-14-38-40c-6-7-14-10-24-10H160c-10 0-18 3-24 10l-38 40-44 14c-8 4-14 10-14 20v22c0 12 8 20 20 20z"/>
+  <circle cx="115" cy="176" r="26"/><circle cx="285" cy="176" r="26"/>
+  <circle cx="115" cy="176" r="10" class="hub"/><circle cx="285" cy="176" r="10" class="hub"/>
+</svg>`;
+
 function imageBlock(car) {
   return car.image
     ? `<img src="${escapeHtml(car.image)}" alt="${escapeHtml(car.title)}" loading="lazy">`
-    : `<span class="car-image-placeholder" aria-hidden="true">${escapeHtml(car.brand)}</span>`;
+    : `<div class="car-image-placeholder" aria-hidden="true">${CAR_SILHOUETTE}</div>`;
 }
 
 function renderCar(car) {
@@ -386,6 +393,10 @@ async function init() {
   bounds.priceMin = Math.floor(Math.min(...prices) / 10000) * 10000;
   bounds.priceMax = Math.ceil(Math.max(...prices) / 10000) * 10000;
   resetRanges();
+
+  $("stat-count").textContent = allCars.length;
+  $("stat-min").textContent = fmtPrice(Math.min(...prices));
+  $("stat-year").textContent = bounds.yearMax;
 
   fillSelect(el.brand, uniqueSorted(allCars, "brand"), "Všechny značky");
   el.mileage.value = MAX_MILEAGE;
