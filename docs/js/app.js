@@ -6,9 +6,12 @@ const CONTACT = {
   email: "info@example.com",
 };
 
-// Odkaz na tabulku publikovanou jako CSV (Soubor → Sdílet → Publikovat na webu).
-// Prázdné = používá se data/cars.json.
-const SHEET_CSV_URL = "";
+// Supabase: URL projektu a anonymní (publishable) klíč, který smí jen číst aktivní vozy.
+// Prázdné = používá se záložní data/cars.json.
+const SUPABASE = {
+  url: "",
+  anonKey: "",
+};
 
 const FAV_KEY = "favorites";
 const MAX_MILEAGE = 300000;
@@ -384,7 +387,7 @@ function refresh() {
 
 async function init() {
   try {
-    allCars = await loadListings(SHEET_CSV_URL);
+    allCars = await loadListings(SUPABASE);
   } catch (err) {
     el.count.textContent = "Nabídku se nepodařilo načíst.";
     console.error(err);
