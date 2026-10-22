@@ -17,6 +17,8 @@ if (!apiUrl) {
 function mapCar(item) {
   return {
     id: String(item.id),
+    brand: item.brand,
+    model: item.model,
     title: item.title,
     price: item.price,
     year: item.year,

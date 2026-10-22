@@ -8,14 +8,66 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Prodej aut</h1>
-    <p id="count" class="muted"></p>
+    <div class="site-header-inner">
+      <h1>Prodej aut</h1>
+      <p id="count" class="muted"></p>
+    </div>
   </header>
 
-  <main>
-    <section id="cars" class="grid" aria-live="polite"></section>
-    <p id="empty" class="muted" hidden>Zatím nejsou k dispozici žádné vozy.</p>
-  </main>
+  <div class="layout">
+    <aside class="filters" aria-label="Filtrování nabídky">
+      <div class="filters-head">
+        <h2>Filtry</h2>
+        <button type="button" id="reset" class="link-button">Vymazat</button>
+      </div>
+
+      <label class="field">
+        <span>Značka</span>
+        <select id="brand"></select>
+      </label>
+
+      <label class="field">
+        <span>Model</span>
+        <select id="model"></select>
+      </label>
+
+      <fieldset class="field">
+        <legend>Rok výroby</legend>
+        <div class="range">
+          <input id="year-min" type="number" inputmode="numeric" placeholder="od">
+          <input id="year-max" type="number" inputmode="numeric" placeholder="do">
+        </div>
+      </fieldset>
+
+      <fieldset class="field">
+        <legend>Cena (Kč)</legend>
+        <div class="range">
+          <input id="price-min" type="number" inputmode="numeric" step="10000" placeholder="od">
+          <input id="price-max" type="number" inputmode="numeric" step="10000" placeholder="do">
+        </div>
+      </fieldset>
+
+      <label class="field">
+        <span>Nájezd do <output id="mileage-out"></output> km</span>
+        <input id="mileage" type="range" min="0" max="300000" step="5000" value="300000">
+      </label>
+
+      <label class="field">
+        <span>Řazení</span>
+        <select id="sort">
+          <option value="price-asc">Cena: nejnižší</option>
+          <option value="price-desc">Cena: nejvyšší</option>
+          <option value="year-desc">Nejnovější</option>
+          <option value="mileage-asc">Nejnižší nájezd</option>
+        </select>
+      </label>
+    </aside>
+
+    <main>
+      <section id="cars" class="grid" aria-live="polite"></section>
+      <p id="empty" class="empty" hidden>Žádný vůz neodpovídá zvoleným filtrům.</p>
+    </main>
+  </div>
 
   <script src="js/app.js" type="module"></script>
 </body>

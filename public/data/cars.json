@@ -1,6 +1,8 @@
 [
   {
     "id": "sample-1",
+    "brand": "Škoda",
+    "model": "Octavia",
     "title": "Škoda Octavia 2.0 TDI Style",
     "price": 389000,
     "year": 2019,
@@ -12,11 +14,39 @@
   },
   {
     "id": "sample-2",
+    "brand": "Volkswagen",
+    "model": "Golf",
     "title": "Volkswagen Golf 1.5 TSI Life",
     "price": 329000,
     "year": 2020,
     "mileage": 74500,
     "fuel": "Benzín",
+    "transmission": "Automat",
+    "image": "",
+    "url": "https://www.sauto.cz/"
+  },
+  {
+    "id": "sample-3",
+    "brand": "Škoda",
+    "model": "Fabia",
+    "title": "Škoda Fabia 1.0 TSI Ambition",
+    "price": 245000,
+    "year": 2018,
+    "mileage": 121000,
+    "fuel": "Benzín",
+    "transmission": "Manuál",
+    "image": "",
+    "url": "https://www.sauto.cz/"
+  },
+  {
+    "id": "sample-4",
+    "brand": "BMW",
+    "model": "X3",
+    "title": "BMW X3 xDrive20d M Sport",
+    "price": 575000,
+    "year": 2021,
+    "mileage": 56000,
+    "fuel": "Nafta",
     "transmission": "Automat",
     "image": "",
     "url": "https://www.sauto.cz/"
