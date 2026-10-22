@@ -6,8 +6,12 @@ const CONTACT = {
   email: "info@example.com",
 };
 
+// Publikovaná tabulka Google Sheets jako CSV (Soubor → Sdílet → Publikovat na webu).
+// Má přednost před Supabase. Prázdné = nepoužije se.
+const SHEET_CSV_URL = "";
+
 // Supabase: URL projektu a anonymní (publishable) klíč, který smí jen číst aktivní vozy.
-// Prázdné = používá se záložní data/cars.json.
+// Pokud není dostupná, použije se záložní data/cars.json.
 const SUPABASE = {
   url: "https://dbhsovfurcnnpdzynxsc.supabase.co",
   anonKey: "sb_publishable_L9PiYmy2e4VA68bemtTpJQ_SRRyjgO7",
@@ -404,7 +408,7 @@ function refresh() {
 
 async function init() {
   try {
-    allCars = await loadListings(SUPABASE);
+    allCars = await loadListings({ ...SUPABASE, sheetUrl: SHEET_CSV_URL });
   } catch (err) {
     el.count.textContent = "Nabídku se nepodařilo načíst.";
     console.error(err);
