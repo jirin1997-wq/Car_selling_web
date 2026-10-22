@@ -2,77 +2,107 @@
 <html lang="cs">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prodej aut</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light dark">
+  <title>Ojeté vozy</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..650&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Space+Grotesk:wght@300..500&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="site-header-inner">
-      <a href="#/" class="site-title">Prodej aut</a>
-      <p id="count" class="muted"></p>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="#/" class="wordmark" aria-label="Ojeté vozy, domů">
+        <span class="wordmark-mark" aria-hidden="true"></span>
+        Ojeté vozy
+      </a>
+      <a href="#/" class="topbar-link" id="home-link">Nabídka</a>
     </div>
   </header>
 
   <div id="list-view" class="layout">
-    <aside class="filters" aria-label="Filtrování nabídky">
+    <aside id="filters" class="filters" aria-label="Filtrování nabídky">
       <div class="filters-head">
         <h2>Filtry</h2>
-        <button type="button" id="reset" class="link-button">Vymazat</button>
+        <button type="button" id="reset" class="text-button">Vymazat vše</button>
+        <button type="button" id="filters-close" class="icon-button" aria-label="Zavřít filtry">✕</button>
       </div>
 
       <label class="field">
-        <span>Značka</span>
+        <span class="field-label">Značka</span>
         <select id="brand"></select>
       </label>
 
       <label class="field">
-        <span>Model</span>
+        <span class="field-label">Model</span>
         <select id="model"></select>
       </label>
 
       <fieldset class="field">
-        <legend>Rok výroby</legend>
-        <div class="range">
-          <input id="year-min" type="number" inputmode="numeric" placeholder="od">
-          <input id="year-max" type="number" inputmode="numeric" placeholder="do">
+        <legend class="field-label">Rok výroby <output id="year-out" class="field-value"></output></legend>
+        <div class="dual">
+          <input id="year-min" type="range" step="1" aria-label="Rok výroby od">
+          <input id="year-max" type="range" step="1" aria-label="Rok výroby do">
         </div>
       </fieldset>
 
       <fieldset class="field">
-        <legend>Cena (Kč)</legend>
-        <div class="range">
-          <input id="price-min" type="number" inputmode="numeric" step="10000" placeholder="od">
-          <input id="price-max" type="number" inputmode="numeric" step="10000" placeholder="do">
+        <legend class="field-label">Cena <output id="price-out" class="field-value"></output></legend>
+        <div class="dual">
+          <input id="price-min" type="range" step="10000" aria-label="Cena od">
+          <input id="price-max" type="range" step="10000" aria-label="Cena do">
         </div>
       </fieldset>
 
       <label class="field">
-        <span>Nájezd do <output id="mileage-out"></output> km</span>
+        <span class="field-label">Nájezd do <output id="mileage-out" class="field-value"></output> km</span>
         <input id="mileage" type="range" min="0" max="300000" step="5000" value="300000">
       </label>
 
-      <label class="field">
-        <span>Řazení</span>
-        <select id="sort">
+      <button type="button" id="filters-apply" class="btn btn-primary filters-apply">Zobrazit vozy</button>
+    </aside>
+
+    <main class="results">
+      <div class="toolbar">
+        <label class="search">
+          <span class="sr-only">Hledat</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input id="search" type="search" placeholder="Hledat značku nebo model" autocomplete="off">
+        </label>
+
+        <button type="button" id="filters-toggle" class="btn btn-outline" aria-expanded="false" aria-controls="filters">
+          Filtry <span id="filter-badge" class="badge" hidden></span>
+        </button>
+
+        <select id="sort" class="sort" aria-label="Řazení">
           <option value="price-asc">Cena: nejnižší</option>
           <option value="price-desc">Cena: nejvyšší</option>
           <option value="year-desc">Nejnovější</option>
           <option value="mileage-asc">Nejnižší nájezd</option>
         </select>
-      </label>
-    </aside>
 
-    <main>
+        <button type="button" id="fav-only" class="btn btn-outline" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="icon-heart"><path d="M12 21s-7-4.35-9.5-8.5C.9 9.6 2.3 5.5 6.2 5.1 8.4 4.9 10.6 6 12 7.8 13.4 6 15.6 4.9 17.8 5.1c3.9.4 5.3 4.5 3.7 7.4C19 16.65 12 21 12 21z"/></svg>
+          Oblíbené <span id="fav-count"></span>
+        </button>
+      </div>
+
+      <div id="chips" class="chips"></div>
+      <p id="count" class="result-meta"></p>
+
       <section id="cars" class="grid" aria-live="polite"></section>
-      <p id="empty" class="empty" hidden>Žádný vůz neodpovídá zvoleným filtrům.</p>
+
+      <div id="empty" class="empty" hidden>
+        <p>Žádný vůz neodpovídá zvoleným filtrům.</p>
+        <button type="button" id="empty-reset" class="btn btn-outline">Vymazat filtry</button>
+      </div>
     </main>
   </div>
 
   <div id="detail-view" class="detail" hidden></div>
+
+  <div id="scrim" class="scrim" hidden></div>
 
   <script src="js/app.js" type="module"></script>
 </body>
