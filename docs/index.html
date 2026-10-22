@@ -9,12 +9,12 @@
 <body>
   <header class="site-header">
     <div class="site-header-inner">
-      <h1>Prodej aut</h1>
+      <a href="#/" class="site-title">Prodej aut</a>
       <p id="count" class="muted"></p>
     </div>
   </header>
 
-  <div class="layout">
+  <div id="list-view" class="layout">
     <aside class="filters" aria-label="Filtrování nabídky">
       <div class="filters-head">
         <h2>Filtry</h2>
@@ -68,6 +68,8 @@
       <p id="empty" class="empty" hidden>Žádný vůz neodpovídá zvoleným filtrům.</p>
     </main>
   </div>
+
+  <div id="detail-view" class="detail" hidden></div>
 
   <script src="js/app.js" type="module"></script>
 </body>

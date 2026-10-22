@@ -1,4 +1,12 @@
+// Kontakt pro tlačítka v detailu vozu. Nahraďte skutečnými údaji.
+const CONTACT = {
+  phone: "+420 000 000 000",
+  email: "info@example.com",
+};
+
 const el = {
+  listView: document.getElementById("list-view"),
+  detailView: document.getElementById("detail-view"),
   cars: document.getElementById("cars"),
   empty: document.getElementById("empty"),
   count: document.getElementById("count"),
@@ -33,14 +41,20 @@ const SORTERS = {
   "mileage-asc": (a, b) => a.mileage - b.mileage,
 };
 
+let allCars = [];
+
+function imageBlock(car, alt) {
+  return car.image
+    ? `<img src="${escapeHtml(car.image)}" alt="${escapeHtml(alt)}" loading="lazy">`
+    : `<span class="car-image-placeholder" aria-hidden="true">${escapeHtml(car.brand)}</span>`;
+}
+
 function renderCar(car) {
   const article = document.createElement("article");
   article.className = "car";
   article.innerHTML = `
-    <a href="${escapeHtml(car.url)}" target="_blank" rel="noopener">
-      <div class="car-image">
-        ${car.image ? `<img src="${escapeHtml(car.image)}" alt="${escapeHtml(car.title)}" loading="lazy">` : ""}
-      </div>
+    <a href="#/car/${encodeURIComponent(car.id)}">
+      <div class="car-image">${imageBlock(car, car.title)}</div>
       <div class="car-body">
         <p class="car-brand">${escapeHtml(car.brand)}</p>
         <h2>${escapeHtml(car.title)}</h2>
@@ -56,17 +70,45 @@ function renderCar(car) {
   return article;
 }
 
-function fillSelect(select, values, allLabel) {
-  const current = select.value;
-  select.replaceChildren(
-    new Option(allLabel, ""),
-    ...values.map((v) => new Option(v, v)),
-  );
-  select.value = values.includes(current) ? current : "";
-}
+function renderDetail(car) {
+  const rows = [
+    ["Rok výroby", car.year],
+    ["Nájezd", `${fmtNum(car.mileage)} km`],
+    ["Palivo", car.fuel],
+    ["Převodovka", car.transmission],
+    ["Výkon", car.power ? `${car.power} kW` : null],
+    ["Objem motoru", car.engine ? `${fmtNum(car.engine)} cm³` : null],
+    ["Barva", car.color],
+    ["Počet majitelů", car.owners],
+    ["STK", car.stk],
+  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
 
-function uniqueSorted(cars, key) {
-  return [...new Set(cars.map((c) => c[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "cs"));
+  el.detailView.innerHTML = `
+    <a href="#/" class="back">← Zpět na nabídku</a>
+
+    <div class="detail-grid">
+      <div class="detail-media">
+        <div class="detail-image">${imageBlock(car, car.title)}</div>
+      </div>
+
+      <div class="detail-info">
+        <p class="car-brand">${escapeHtml(car.brand)}</p>
+        <h1>${escapeHtml(car.title)}</h1>
+        <p class="detail-price">${fmtPrice(car.price)}</p>
+
+        <dl class="facts">
+          ${rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${escapeHtml(value)}</dd></div>`).join("")}
+        </dl>
+
+        ${car.description ? `<p class="description">${escapeHtml(car.description)}</p>` : ""}
+
+        <div class="actions">
+          <a class="btn btn-primary" href="tel:${escapeHtml(CONTACT.phone.replace(/\s/g, ""))}">Zavolat</a>
+          <a class="btn" href="mailto:${escapeHtml(CONTACT.email)}?subject=${encodeURIComponent(car.title)}">Napsat e-mail</a>
+          <a class="btn btn-link" href="${escapeHtml(car.url)}" target="_blank" rel="noopener">Původní inzerát</a>
+        </div>
+      </div>
+    </div>`;
 }
 
 function currentFilters() {
@@ -94,9 +136,20 @@ function applyFilters(cars, f) {
   });
 }
 
-let allCars = [];
+function fillSelect(select, values, allLabel) {
+  const current = select.value;
+  select.replaceChildren(
+    new Option(allLabel, ""),
+    ...values.map((v) => new Option(v, v)),
+  );
+  select.value = values.includes(current) ? current : "";
+}
 
-function render() {
+function uniqueSorted(cars, key) {
+  return [...new Set(cars.map((c) => c[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b, "cs"));
+}
+
+function renderList() {
   const f = currentFilters();
   el.mileageOut.textContent = fmtNum(f.mileageMax);
 
@@ -111,6 +164,26 @@ function render() {
   el.count.textContent = `Nalezeno ${result.length} z ${allCars.length} vozů`;
 }
 
+function route() {
+  const match = location.hash.match(/^#\/car\/(.+)$/);
+  const car = match ? allCars.find((c) => c.id === decodeURIComponent(match[1])) : null;
+
+  if (car) {
+    renderDetail(car);
+    el.listView.hidden = true;
+    el.detailView.hidden = false;
+    el.count.textContent = "";
+    document.title = `${car.title} · Prodej aut`;
+    window.scrollTo(0, 0);
+  } else {
+    el.listView.hidden = false;
+    el.detailView.hidden = true;
+    el.detailView.replaceChildren();
+    document.title = "Prodej aut";
+    renderList();
+  }
+}
+
 function reset() {
   el.brand.value = "";
   el.model.value = "";
@@ -120,7 +193,7 @@ function reset() {
   el.priceMax.value = "";
   el.mileage.value = el.mileage.max;
   el.sort.value = "price-asc";
-  render();
+  renderList();
 }
 
 async function init() {
@@ -136,16 +209,17 @@ async function init() {
   fillSelect(el.brand, uniqueSorted(allCars, "brand"), "Všechny značky");
   el.mileage.value = el.mileage.max;
 
-  for (const input of document.querySelectorAll("input, select")) {
-    input.addEventListener("input", render);
-    input.addEventListener("change", render);
+  for (const input of el.listView.querySelectorAll("input, select")) {
+    input.addEventListener("input", renderList);
+    input.addEventListener("change", renderList);
   }
   el.brand.addEventListener("change", () => {
     el.model.value = "";
-    render();
+    renderList();
   });
   el.reset.addEventListener("click", reset);
-  render();
+  window.addEventListener("hashchange", route);
+  route();
 }
 
 init();

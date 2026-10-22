@@ -25,6 +25,12 @@ function mapCar(item) {
     mileage: item.mileage,
     fuel: item.fuel,
     transmission: item.transmission,
+    power: item.power,
+    engine: item.engine,
+    color: item.color,
+    owners: item.owners,
+    stk: item.stk,
+    description: item.description,
     image: item.image ?? "",
     url: item.url,
   };
