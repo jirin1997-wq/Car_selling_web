@@ -9,7 +9,7 @@ const CONTACT = {
 // Supabase: URL projektu a anonymní (publishable) klíč, který smí jen číst aktivní vozy.
 // Prázdné = používá se záložní data/cars.json.
 const SUPABASE = {
-  url: "",
+  url: "https://dbhsovfurcnnpdzynxsc.supabase.co",
   anonKey: "",
 };
 
