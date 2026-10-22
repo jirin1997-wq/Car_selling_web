@@ -6,7 +6,7 @@ import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const root = join(here, "..");
-const inputFile = process.argv[2] ?? join(root, "data", "listings.csv");
+const inputFile = process.argv[2] ?? process.env.LISTINGS_CSV_URL ?? join(root, "data", "listings.csv");
 const outputFile = join(root, "docs", "data", "cars.json");
 
 const NUMERIC = ["price", "year", "mileage", "power", "engine", "owners"];
@@ -74,7 +74,15 @@ function toCar(raw, lineNo) {
   return car;
 }
 
-const text = await readFile(inputFile, "utf8");
+// Vstup může být lokální soubor, nebo URL publikované tabulky (např. Google Sheets jako CSV).
+async function loadText(source) {
+  if (!/^https?:\/\//.test(source)) return readFile(source, "utf8");
+  const res = await fetch(source);
+  if (!res.ok) throw new Error(`Načtení tabulky selhalo: HTTP ${res.status}`);
+  return res.text();
+}
+
+const text = await loadText(inputFile);
 const cars = parseCsv(text).map((raw, i) => toCar(raw, i + 2));
 
 const ids = new Set();
