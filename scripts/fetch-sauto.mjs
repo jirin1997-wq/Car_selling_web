@@ -1,4 +1,4 @@
-// Stáhne inzeráty ze Sauto a uloží je do public/data/cars.json.
+// Stáhne inzeráty ze Sauto a uloží je do docs/data/cars.json.
 // Endpoint a tvar odpovědi nejsou ověřené: nastavte SAUTO_API_URL a případně
 // upravte mapCar podle skutečné odpovědi.
 import { writeFile, mkdir } from "node:fs/promises";
@@ -6,7 +6,7 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const outFile = join(here, "..", "public", "data", "cars.json");
+const outFile = join(here, "..", "docs", "data", "cars.json");
 
 const apiUrl = process.env.SAUTO_API_URL;
 if (!apiUrl) {
