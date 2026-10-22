@@ -1,10 +1,18 @@
 // Načítání nabídky z Supabase. Když databáze není nastavená nebo není dostupná,
 // použije se záložní soubor data/cars.json.
 
+const BUCKET = "car-photos";
+
 const COLUMNS = [
   "id", "brand", "model", "title", "price", "year", "mileage", "fuel", "transmission",
-  "power", "engine", "color", "owners", "stk", "description", "image", "url",
+  "power", "engine", "color", "owners", "stk", "description", "images", "url",
 ].join(",");
+
+// Cesta v bucketu se změní na veřejnou URL, absolutní URL zůstane beze změny.
+function photoUrl(supabaseUrl, value) {
+  if (/^https?:\/\//.test(value)) return value;
+  return `${supabaseUrl}/storage/v1/object/public/${BUCKET}/${value.split("/").map(encodeURIComponent).join("/")}`;
+}
 
 async function fromSupabase({ url, anonKey }) {
   const params = new URLSearchParams({
@@ -17,7 +25,11 @@ async function fromSupabase({ url, anonKey }) {
     cache: "no-store",
   });
   if (!res.ok) throw new Error(`Supabase vrátil HTTP ${res.status}`);
-  return res.json();
+  const cars = await res.json();
+  return cars.map((car) => ({
+    ...car,
+    images: (car.images ?? []).map((p) => photoUrl(url, p)),
+  }));
 }
 
 export async function loadListings(config) {

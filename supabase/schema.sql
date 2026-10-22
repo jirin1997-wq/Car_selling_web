@@ -1,4 +1,4 @@
--- Tabulka nabídky. Spusťte v Supabase: SQL Editor → New query → Run.
+-- Tabulka nabídky a úložiště fotek. Spusťte v Supabase: SQL Editor → New query → Run.
 
 create table if not exists public.cars (
   id            text primary key,
@@ -17,7 +17,7 @@ create table if not exists public.cars (
   owners        integer,
   stk           text,
   description   text,
-  image         text not null default '',
+  images        text[] not null default '{}',     -- první je hlavní fotka; hodnota je URL nebo cesta v bucketu car-photos
   url           text not null default '',
   is_active     boolean not null default true,
   updated_at    timestamptz not null default now()
@@ -36,3 +36,9 @@ create policy "Veřejné čtení aktivních vozů"
   for select
   to anon, authenticated
   using (is_active);
+
+-- Bucket s fotkami vozů. Veřejný bucket je čitelný přes URL bez přihlášení,
+-- nahrávat a mazat soubory může jen vlastník projektu (Dashboard nebo service_role).
+insert into storage.buckets (id, name, public)
+values ('car-photos', 'car-photos', true)
+on conflict (id) do nothing;

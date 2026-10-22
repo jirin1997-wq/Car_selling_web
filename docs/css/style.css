@@ -804,6 +804,61 @@ input[type="range"] {
 
 .detail-info { position: sticky; top: 104px; }
 
+/* Galerie v detailu */
+.detail-image:has(.gallery) {
+  aspect-ratio: auto;
+  background: none;
+  border: 0;
+  box-shadow: none;
+}
+
+.gallery { display: grid; gap: 12px; }
+
+.gallery-main {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  background: linear-gradient(180deg, var(--surface-2), var(--bg));
+}
+
+.gallery-main img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: opacity 0.4s var(--ease);
+}
+
+.gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+  gap: 10px;
+}
+
+.gallery-thumb {
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  background: var(--surface-2);
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+
+.gallery-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-thumb:hover { opacity: 1; }
+.gallery-thumb.is-active { opacity: 1; border-color: var(--accent); }
+
 .detail-info .car-brand { margin-bottom: 14px; }
 
 .detail-info h1 {

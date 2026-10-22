@@ -102,9 +102,26 @@ const CAR_SILHOUETTE = `<svg class="car-silhouette" viewBox="0 0 400 240" aria-h
 </svg>`;
 
 function imageBlock(car) {
-  return car.image
-    ? `<img src="${escapeHtml(car.image)}" alt="${escapeHtml(car.title)}" loading="lazy">`
+  const [cover] = car.images ?? [];
+  return cover
+    ? `<img src="${escapeHtml(cover)}" alt="${escapeHtml(car.title)}" loading="lazy">`
     : `<div class="car-image-placeholder" aria-hidden="true">${CAR_SILHOUETTE}</div>`;
+}
+
+// Hlavní fotka a řada náhledů. Kliknutí na náhled přepne hlavní fotku.
+function galleryBlock(car) {
+  const photos = car.images ?? [];
+  if (photos.length === 0) return imageBlock(car);
+  return `
+    <div class="gallery">
+      <div class="gallery-main">
+        <img id="gallery-main" src="${escapeHtml(photos[0])}" alt="${escapeHtml(car.title)}">
+      </div>
+      ${photos.length > 1 ? `<div class="gallery-thumbs">${photos
+        .map((src, i) => `<button type="button" class="gallery-thumb${i === 0 ? " is-active" : ""}" data-photo="${escapeHtml(src)}"
+          aria-label="Fotka ${i + 1}"><img src="${escapeHtml(src)}" alt="" loading="lazy"></button>`)
+        .join("")}</div>` : ""}
+    </div>`;
 }
 
 function renderCar(car) {
@@ -150,7 +167,7 @@ function renderDetail(car) {
     </nav>
 
     <div class="detail-grid">
-      <div class="detail-image">${imageBlock(car)}</div>
+      <div class="detail-image">${galleryBlock(car)}</div>
 
       <div class="detail-info">
         <p class="car-brand">${escapeHtml(car.brand)}</p>
@@ -446,6 +463,14 @@ async function init() {
     favorites.has(id) ? favorites.delete(id) : favorites.add(id);
     saveFavorites();
     refresh();
+  });
+
+  document.addEventListener("click", (e) => {
+    const thumb = e.target.closest("[data-photo]");
+    const main = $("gallery-main");
+    if (!thumb || !main) return;
+    main.src = thumb.dataset.photo;
+    document.querySelectorAll(".gallery-thumb").forEach((b) => b.classList.toggle("is-active", b === thumb));
   });
 
   window.addEventListener("hashchange", route);

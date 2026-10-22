@@ -53,6 +53,11 @@ function parseCsv(text) {
   return body.map((values) => Object.fromEntries(header.map((key, i) => [key.trim(), (values[i] ?? "").trim()])));
 }
 
+// Fotky se oddělují svislítkem: "a.jpg|b.jpg" nebo "https://…/a.jpg|https://…/b.jpg".
+function splitImages(value) {
+  return (value || "").split("|").map((s) => s.trim()).filter(Boolean);
+}
+
 function toCar(raw, lineNo) {
   for (const key of REQUIRED) {
     if (!raw[key]) throw new Error(`Řádek ${lineNo}: chybí pole "${key}"`);
@@ -68,7 +73,7 @@ function toCar(raw, lineNo) {
     color: raw.color || null,
     stk: raw.stk || null,
     description: raw.description || null,
-    image: raw.image || "",
+    images: splitImages(raw.images || raw.image),
     url: raw.url || "",
   };
 
