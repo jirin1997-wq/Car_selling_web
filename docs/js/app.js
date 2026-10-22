@@ -1,8 +1,14 @@
+import { loadListings } from "./listings.js";
+
 // Kontakt pro tlačítka v detailu vozu. Nahraďte skutečnými údaji.
 const CONTACT = {
   phone: "+420 000 000 000",
   email: "info@example.com",
 };
+
+// Odkaz na tabulku publikovanou jako CSV (Soubor → Sdílet → Publikovat na webu).
+// Prázdné = používá se data/cars.json.
+const SHEET_CSV_URL = "";
 
 const FAV_KEY = "favorites";
 const MAX_MILEAGE = 300000;
@@ -378,8 +384,7 @@ function refresh() {
 
 async function init() {
   try {
-    const res = await fetch("data/cars.json");
-    allCars = await res.json();
+    allCars = await loadListings(SHEET_CSV_URL);
   } catch (err) {
     el.count.textContent = "Nabídku se nepodařilo načíst.";
     console.error(err);
