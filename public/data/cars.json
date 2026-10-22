@@ -1,0 +1,24 @@
+[
+  {
+    "id": "sample-1",
+    "title": "Škoda Octavia 2.0 TDI Style",
+    "price": 389000,
+    "year": 2019,
+    "mileage": 98000,
+    "fuel": "Nafta",
+    "transmission": "Manuál",
+    "image": "",
+    "url": "https://www.sauto.cz/"
+  },
+  {
+    "id": "sample-2",
+    "title": "Volkswagen Golf 1.5 TSI Life",
+    "price": 329000,
+    "year": 2020,
+    "mileage": 74500,
+    "fuel": "Benzín",
+    "transmission": "Automat",
+    "image": "",
+    "url": "https://www.sauto.cz/"
+  }
+]
