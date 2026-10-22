@@ -10,7 +10,7 @@ const CONTACT = {
 // Prázdné = používá se záložní data/cars.json.
 const SUPABASE = {
   url: "https://dbhsovfurcnnpdzynxsc.supabase.co",
-  anonKey: "",
+  anonKey: "sb_publishable_L9PiYmy2e4VA68bemtTpJQ_SRRyjgO7",
 };
 
 const FAV_KEY = "favorites";
