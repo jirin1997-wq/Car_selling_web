@@ -1,20 +1,10 @@
 import { loadListings } from "./listings.js";
+import { SHEET_CSV_URL, SUPABASE } from "./config.js";
 
 // Kontakt pro tlačítka v detailu vozu. Nahraďte skutečnými údaji.
 const CONTACT = {
   phone: "+420 000 000 000",
   email: "info@example.com",
-};
-
-// Publikovaná tabulka Google Sheets jako CSV (Soubor → Sdílet → Publikovat na webu).
-// Má přednost před Supabase. Prázdné = nepoužije se.
-const SHEET_CSV_URL = "";
-
-// Supabase: URL projektu a anonymní (publishable) klíč, který smí jen číst aktivní vozy.
-// Pokud není dostupná, použije se záložní data/cars.json.
-const SUPABASE = {
-  url: "https://dbhsovfurcnnpdzynxsc.supabase.co",
-  anonKey: "sb_publishable_L9PiYmy2e4VA68bemtTpJQ_SRRyjgO7",
 };
 
 const FAV_KEY = "favorites";

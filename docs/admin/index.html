@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="cs">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Správa nabídky</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=Space+Grotesk:wght@300..500&display=swap">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .admin { max-width: 1200px; margin: 0 auto; padding: 40px 28px 80px; display: grid; gap: 32px; }
+    .admin h1 { font-family: var(--font-display); font-weight: 400; font-size: 2rem; margin: 0; letter-spacing: -0.02em; }
+    .admin-bar { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .card { background: var(--surface-solid); border: 1px solid var(--line); border-radius: var(--radius-xl); padding: 28px; box-shadow: var(--shadow); }
+    .login { max-width: 380px; margin: 80px auto; display: grid; gap: 16px; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .form-grid .wide { grid-column: 1 / -1; }
+    .form-grid label { display: grid; gap: 8px; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .form-grid textarea { width: 100%; min-height: 90px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-solid); color: var(--text); font: inherit; font-size: 0.92rem; resize: vertical; }
+    .form-grid input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--accent); }
+    .form-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 8px; }
+    .table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+    .table th { text-align: left; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 500; padding: 0 12px 12px; }
+    .table td { padding: 12px; border-top: 1px solid var(--line); vertical-align: middle; }
+    .table .thumb { width: 72px; height: 54px; border-radius: 10px; object-fit: cover; background: var(--surface-2); display: block; }
+    .table .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .table .btn { height: 34px; padding: 0 14px; font-size: 0.72rem; }
+    .pill { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; border: 1px solid var(--line-strong); color: var(--text-2); }
+    .pill.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+    .msg { font-size: 0.875rem; color: var(--muted); min-height: 1.2em; }
+    .msg.error { color: #b4453a; }
+    .hidden { display: none !important; }
+    .table-wrap { overflow-x: auto; }
+    @media (max-width: 640px) { .admin { padding: 24px 16px 60px; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a href="../" class="wordmark"><span class="wordmark-mark" aria-hidden="true"></span>Ojeté vozy</a>
+      <button type="button" id="logout" class="text-button hidden">Odhlásit</button>
+    </div>
+  </header>
+
+  <section id="login-view" class="login">
+    <div class="card">
+      <h1 style="font-family: var(--font-display); font-weight: 400; font-size: 1.6rem; margin: 0 0 20px;">Přihlášení</h1>
+      <form id="login-form" class="form-grid" style="grid-template-columns: 1fr;">
+        <label>E-mail <input id="email" type="email" autocomplete="username" required></label>
+        <label>Heslo <input id="password" type="password" autocomplete="current-password" required></label>
+        <div class="form-actions"><button type="submit" class="btn btn-primary">Přihlásit</button></div>
+      </form>
+      <p id="login-msg" class="msg"></p>
+    </div>
+  </section>
+
+  <main id="admin-view" class="admin hidden">
+    <div class="admin-bar">
+      <h1>Nabídka vozů</h1>
+      <button type="button" id="new-car" class="btn btn-outline">Přidat vůz</button>
+    </div>
+
+    <section class="card">
+      <div class="table-wrap">
+        <table class="table">
+          <thead><tr><th>Foto</th><th>Vůz</th><th>Cena</th><th>Rok</th><th>Stav</th><th></th></tr></thead>
+          <tbody id="car-rows"></tbody>
+        </table>
+      </div>
+      <p id="list-msg" class="msg"></p>
+    </section>
+
+    <section id="form-card" class="card hidden">
+      <h2 id="form-title" style="font-family: var(--font-display); font-weight: 400; font-size: 1.4rem; margin: 0 0 24px;">Nový vůz</h2>
+      <form id="car-form" class="form-grid">
+        <label>ID (unikátní) <input name="id" required></label>
+        <label>Značka <input name="brand" required></label>
+        <label>Model <input name="model" required></label>
+        <label>Název <input name="title"></label>
+        <label>Cena (Kč) <input name="price" type="number" required></label>
+        <label>Rok <input name="year" type="number" required></label>
+        <label>Nájezd (km) <input name="mileage" type="number" required></label>
+        <label>Palivo <input name="fuel" required></label>
+        <label>Převodovka <input name="transmission" required></label>
+        <label>Výkon (kW) <input name="power" type="number"></label>
+        <label>Objem (cm³) <input name="engine" type="number"></label>
+        <label>Barva <input name="color"></label>
+        <label>Počet majitelů <input name="owners" type="number"></label>
+        <label>STK <input name="stk"></label>
+        <label>Odkaz na inzerát <input name="url" type="url"></label>
+        <label>Aktivní (na webu) <input name="is_active" type="checkbox" checked></label>
+        <label class="wide">Fotky (jeden odkaz na řádek, první je hlavní) <textarea name="images" placeholder="https://…/foto1.jpg"></textarea></label>
+        <label class="wide">Popis <textarea name="description"></textarea></label>
+        <div class="wide form-actions">
+          <button type="submit" class="btn btn-primary">Uložit</button>
+          <button type="button" id="cancel-form" class="btn btn-outline">Zrušit</button>
+          <p id="form-msg" class="msg"></p>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
