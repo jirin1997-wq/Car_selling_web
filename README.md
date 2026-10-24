@@ -1,27 +1,39 @@
-# Car selling web
+# Ojeté vozy
 
-Statický web s nabídkou ojetých vozů. Data se berou ze Sauto.
+Statický web s nabídkou ojetých vozů. Stránka je na GitHub Pages z větve `main`, složky `docs/`.
 
 ## Struktura
 
-- `docs/` – statický web (HTML, CSS, JS) a `data/cars.json` s nabídkou
-- `scripts/fetch-sauto.mjs` – stáhne inzeráty ze Sauto do `docs/data/cars.json`
+- `docs/` – web: `index.html` (nabídka a detail), `admin/` (správa vozů po přihlášení)
+- `docs/js/listings.js` – načítání nabídky: Google Sheets (volitelně), Supabase, záložní `docs/data/cars.json`
+- `docs/js/config.js` – URL a publishable klíč Supabase
+- `supabase/schema.sql` – tabulka `cars` a bucket `car-photos`
+- `supabase/admin-policies.sql` – práva pro administrátorský účet
+- `scripts/import-csv.mjs` – převede `data/listings.csv` na `docs/data/cars.json` a volitelně nahraje do Supabase
 
-## Spuštění
+## Nastavení Supabase
 
-Web je bez buildu, stačí statický server:
+1. V SQL Editoru spusťte `supabase/schema.sql`, potom `supabase/admin-policies.sql`.
+2. V Authentication → Users vytvořte účet `vernerova.bara@gmail.com`.
+3. Přihlaste se na `/admin/` a přidávejte vozy. Fotky jsou odkazy v poli `images`, oddělené novým řádkem.
+
+## Lokální náhled
+
+Web nemá build, stačí statický server:
 
 ```sh
 npx serve docs
 ```
 
-Aktualizace nabídky (vyžaduje URL API, které nebylo ověřeno):
+## Import z CSV
 
 ```sh
-SAUTO_API_URL="https://..." node scripts/fetch-sauto.mjs
+node scripts/import-csv.mjs            # jen docs/data/cars.json ze souboru data/listings.csv
 ```
 
-## Stav
+S proměnnými `SUPABASE_URL` a `SUPABASE_SERVICE_KEY` se navíc vozy nahrají do databáze. Service_role klíč patří jen do prostředí, ne do repa.
 
-- Ukázková data v `docs/data/cars.json` jsou fiktivní.
-- Napojení na Sauto zatím není ověřené, endpoint i tvar odpovědi je potřeba doplnit.
+## Poznámky
+
+- Inzeráty z cizích serverů (Sauto, Bazoš, mobile.de, TipCars) se nestahují. Většina z nich to podmínkami zakazuje nebo nabízí jen oficiální rozhraní pro autobazary.
+- Publishable klíč v `docs/js/config.js` smí jen číst aktivní vozy. Zápis chrání RLS a přihlášení.
